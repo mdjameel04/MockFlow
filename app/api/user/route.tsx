@@ -13,7 +13,7 @@ export async function POST(req:NextRequest) {
     .where(eq(usersTable.email, user?.primaryEmailAddress?.emailAddress as string))
 
       // if no user exist then create new
-      if(!users) {
+      if(users?.length==0) {
         const data = {
         name: user?.fullName??"",
         email : user?.primaryEmailAddress?.emailAddress as string
@@ -21,7 +21,7 @@ export async function POST(req:NextRequest) {
         const result = await db.insert(usersTable).values({
             ...data
         }).returning();
-        return NextResponse.json(result)
+        return NextResponse.json(result[0] ?? {})
       }
-    return NextResponse.json(users[0])
+    return NextResponse.json(users[0] ?? {})
 }
