@@ -1,15 +1,20 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea, } from "@/components/ui/input-group"
 
 import { Select,SelectContent, SelectGroup, SelectItem, SelectTrigger,SelectValue } from '@/components/ui/select'
-import { ChevronRight, Send } from 'lucide-react'
+import { ChevronRight, Send, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AnimatedGradientText } from '@/components/ui/animated-gradient-text'
+import { suggestions } from '@/data/constant'
 const Hero = () => {
+
+  const [userInput, setUserInput] = useState<string>();
+  const [device, setDevice] = useState<string>("website");
   return (
 
     
-    <div className='p-10 md:px-24 lg:px-48 xl:px-60 mt-20 '>
+    <div className='p-10 md:px-24 lg:px-48 xl:px-60 mt-8 '>
 <div className='flex items-center justify-center mb-5'>
 <div className="group relative max-w-sm flex items-center justify-center rounded-full px-4 py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f]">
       <span
@@ -41,9 +46,12 @@ const Hero = () => {
           data-slot="input-group-control"
           className="flex field-sizing-content min-h-24 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
           placeholder="Enter what design you want to create"
+          value={userInput}
+          onChange={(e)=>setUserInput(e.target.value)}
+        
         />
         <InputGroupAddon align="block-end">
-        <Select defaultValue='website'>
+        <Select defaultValue='website' onValueChange={(value)=>setDevice(value)}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a fruit" />
       </SelectTrigger>
@@ -64,6 +72,19 @@ const Hero = () => {
         </InputGroupAddon>
       </InputGroup>
     </div>
+    
+  <div className='flex gap-3 mt-4'>
+    {suggestions.map((suggestion, index)=>(
+   <div key={index} className='p-2 border rounded-2xl flex flex-col items-center justify-center bg-white z-10 cursor-pointer' 
+   onClick={()=>setUserInput(suggestion.description)}>
+    <h2 className='text-lg'>{suggestion?.icon} </h2>
+    <h2 className='text-center line-clamp-2 text-sm'>{suggestion?.name} </h2>
+   </div>
+   
+
+    ))}
+  </div>
+
     </div>
   )
 }
