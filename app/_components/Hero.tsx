@@ -3,14 +3,46 @@ import React, { useState } from 'react'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea, } from "@/components/ui/input-group"
 
 import { Select,SelectContent, SelectGroup, SelectItem, SelectTrigger,SelectValue } from '@/components/ui/select'
-import { ChevronRight, Send, Target } from 'lucide-react'
+import { ChevronRight, Loader, Send, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AnimatedGradientText } from '@/components/ui/animated-gradient-text'
 import { suggestions } from '@/data/constant'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { randomUUID } from 'crypto'
+import { tr } from 'date-fns/locale'
+
 const Hero = () => {
 
   const [userInput, setUserInput] = useState<string>();
   const [device, setDevice] = useState<string>("website");
+  const [loading, setLoading] = useState(false);
+const {user} = useUser()
+const router = useRouter()
+
+const onCreateProject =async()=>{
+
+  if(!user) {
+    router.push("/sign-in");
+    return
+  }
+  setLoading(true)
+  // create new project
+if(!userInput) {
+  return
+} 
+
+const projectId = crypto.randomUUID()
+  const result = await axios.post("/api/project",{
+    userInput: userInput,
+    device: device,
+    projectId: projectId
+  })
+ console.log(result.data)
+ setLoading(false)
+}
+
   return (
 
     
@@ -66,8 +98,11 @@ const Hero = () => {
             className="ml-auto"
             size="sm"
             variant="default"
+            onClick={onCreateProject}
+            disabled= {loading}
           >
-          <Send/>
+            {loading? <Loader/> :<Send/> }
+          
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
