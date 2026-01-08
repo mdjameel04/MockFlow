@@ -11,7 +11,7 @@ import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { randomUUID } from 'crypto'
-import { tr } from 'date-fns/locale'
+
 
 const Hero = () => {
 
@@ -33,6 +33,7 @@ if(!userInput) {
   return
 } 
 
+
 const projectId = crypto.randomUUID()
   const result = await axios.post("/api/project",{
     userInput: userInput,
@@ -40,7 +41,11 @@ const projectId = crypto.randomUUID()
     projectId: projectId
   })
  console.log(result.data)
- setLoading(false)
+ setLoading(false);
+
+// navigate to new project
+ router.push("/project/" +projectId)
+
 }
 
   return (
