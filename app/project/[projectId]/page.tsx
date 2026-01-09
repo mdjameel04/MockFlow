@@ -4,17 +4,15 @@ import ProjectHeader from './_components/ProjectHeader'
 import SettingSection from './_components/SettingSection'
 import axios from 'axios'
 import { useParams } from 'next/navigation'
-import { projectType } from '@/type/type'
+import { projectType, ScreenConfig } from '@/type/type'
 import { Loader2Icon } from 'lucide-react'
-
-
-
 
 
 
 const ProjectCanvasPlayground = () => {
   const {projectId} = useParams();
 const [projectDeatail, setProjectDeatail] = useState<projectType>();
+const [screenConfig, setScreenConfig] = useState<ScreenConfig[]>([]);
 const [loading, setLoading] = useState(true);
 const [loadingmsg, setLoadingmsg] = useState("Loading");
 
@@ -27,9 +25,35 @@ const [loadingmsg, setLoadingmsg] = useState("Loading");
     setLoadingmsg('loading...')
     const result = await axios.get("/api/project?projectId="+projectId)
     console.log(result.data)
-    setProjectDeatail(result.data)
+    setProjectDeatail(result.data?.projectDetail)
+    setScreenConfig(result.data?.ScreenConfig)
+  //  if(result.data.ScreenConfig?.length==0) {
+  //   GenrateScreenConfig()
+  //  }
+
    setLoading(false) 
   }
+       useEffect(()=>{
+        if(projectDeatail&&screenConfig&&screenConfig.length==0)
+        {
+          GenrateScreenConfig()
+        }
+       },[ projectDeatail&&screenConfig])
+       
+   const GenrateScreenConfig = async()=>{
+    // call api endpoints here(openrouter)
+       setLoading(true)
+       setLoadingmsg("Generating screen config")
+
+       const reult = await axios.post("/api/generate-config",{
+        projectId :projectId,
+        deviceType: projectDeatail?.device,
+        userInput : projectDeatail?.userInput
+       })
+       console.log(reult.data)
+setLoading(false)
+
+   }
   return (
     <div>
         <ProjectHeader/>
