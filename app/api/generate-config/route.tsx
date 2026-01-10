@@ -5,14 +5,15 @@ import { ProjectTable, ScreenConfigTable } from "@/config/schema";
 import { APP_LAYOUT_CONFIG_PROMPT } from "@/data/Prompt";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { json } from "zod";
+
 
 
 export async function POST(req: NextRequest){
     const {userInput, deviceType, projectId} = await req.json();
 
-const airesult = await openrouter .chat.send({
-  model: "google/gemini-2.5-flash-lite-preview-09-2025",
+const airesult = await openrouter.chat.send({
+  model: "meta-llama/llama-3.1-8b-instruct",
+ 
   messages: [
     {
    "role" :"system",

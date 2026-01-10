@@ -38,6 +38,11 @@ const [loadingmsg, setLoadingmsg] = useState("Loading");
         {
           GenrateScreenConfig()
         }
+        else {
+          if(projectDeatail&&screenConfig ){
+            GenerateScreenUIUX()
+          }
+        }
        },[ projectDeatail&&screenConfig])
        
    const GenrateScreenConfig = async()=>{
@@ -45,16 +50,35 @@ const [loadingmsg, setLoadingmsg] = useState("Loading");
        setLoading(true)
        setLoadingmsg("Generating screen config")
 
-       const reult = await axios.post("/api/generate-config",{
+       const result = await axios.post("/api/generate-config",{
         projectId :projectId,
         deviceType: projectDeatail?.device,
         userInput : projectDeatail?.userInput
        })
-       console.log(reult.data)
+       console.log(result.data)
        GetProjectDetails()
 setLoading(false)
-
    }
+
+    const GenerateScreenUIUX = async()=>{
+      setLoading(true);
+      for(let index=0; index<screenConfig?.length; index++) {
+        const screen = screenConfig[index];
+        if(screen?.code) continue;
+        setLoadingmsg("Genratind Screen" +index+1)
+           
+        const result = await axios.post("/api/generate-screen-ui",{
+          projectId,
+          screenId:screen?.screenId,
+          screenName:screen?.screenName,
+          purpose: screen?.purpose,
+          screenDescription: screen?.screenDescription
+        });
+        console.log(result.data)
+      }
+      setLoading(false)
+    }
+
   return (
     <div>
         <ProjectHeader/>
