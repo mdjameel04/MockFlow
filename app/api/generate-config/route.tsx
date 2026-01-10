@@ -1,7 +1,12 @@
 
+import { db } from "@/config/db";
 import { openrouter } from "@/config/openroute";
+import { ProjectTable, ScreenConfigTable } from "@/config/schema";
 import { APP_LAYOUT_CONFIG_PROMPT } from "@/data/Prompt";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { json } from "zod";
+
 
 export async function POST(req: NextRequest){
     const {userInput, deviceType, projectId} = await req.json();
@@ -32,7 +37,28 @@ const airesult = await openrouter .chat.send({
 });
  
 const JSONAiResult = JSON.parse(airesult?.choices[0]?.message?.content as string)
-// once we get details we need to save to database
+if(JSONAiResult) {
+
+// update project table with project Name
+await db.update(ProjectTable).set({
+  projectVisualDescription : JSONAiResult?.projectVisualDescription,
+  projectName : JSONAiResult?.projectName,
+  theme : JSONAiResult.theme
+}).where(eq(ProjectTable.projectID, projectId as string))
+// Insert Screen Config
+JSONAiResult.screens?.forEach(async (screen:any)=>{
+ const result = await db.insert(ScreenConfigTable).values({
+  projectId:projectId,
+  purpose:screen?.purpose,
+  screenDescription: screen?.layoutDescription,
+  screenId: screen?.id,
+  screenName: screen?.name
+ })
+})
   console.log(airesult)
    return NextResponse.json(JSONAiResult)
+}
+else {
+return NextResponse.json({message:"internal server error"})
+}
 }

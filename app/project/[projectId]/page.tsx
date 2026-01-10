@@ -51,6 +51,7 @@ const [loadingmsg, setLoadingmsg] = useState("Loading");
         userInput : projectDeatail?.userInput
        })
        console.log(reult.data)
+       GetProjectDetails()
 setLoading(false)
 
    }
@@ -67,7 +68,7 @@ setLoading(false)
 
     </div>
   {/* settingSection */}
-   <SettingSection/>
+   <SettingSection projectDetail={projectDeatail} />
     {/* canvasSection */}
 
     </div>

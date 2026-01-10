@@ -3,15 +3,24 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { THEME_NAME_LIST, THEMES } from '@/data/theme'
+import { projectType } from '@/type/type'
 import {Camera, Share2, ShareIcon, Sparkles} from 'lucide-react'
 import { Share } from 'next/font/google'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const SettingSection = () => {
+
+type Props={
+  projectDetail:projectType | undefined
+}
+const SettingSection = ({projectDetail}:Props) => {
 const [selectedTheme, setSelectedTheme] = useState("AURORA_INK");
-const [projectName, setProjectName] = useState("");
+const [projectName, setProjectName] = useState(projectDetail?.projectName);
 const [userNewsScreenInput, setUserNewsScreenInput] = useState<string> ();
-
+  
+useEffect(()=>{
+projectDetail&&setProjectName(projectDetail?.projectName)
+},[projectDetail])
+ 
   return (
     <div className='w-[300px] h-[90vh] p-5 border-r '>
     <h2 className='text-lg font-medium'> setting </h2>
