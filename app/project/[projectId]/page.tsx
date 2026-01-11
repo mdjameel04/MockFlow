@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useParams } from 'next/navigation'
 import { projectType, ScreenConfig } from '@/type/type'
 import { Loader2Icon } from 'lucide-react'
+import Canvas from './_components/Canvas'
 
 
 
@@ -75,26 +76,28 @@ setLoading(false)
           screenDescription: screen?.screenDescription
         });
         console.log(result.data)
+        setScreenConfig(prev=>prev.map((item,i)=>
+        (i===index?result.data:item)))
       }
       setLoading(false)
     }
 
   return (
-    <div>
+    <div >
         <ProjectHeader/>
-        <div>
-        
+
+        <div className='flex'> 
       {loading && 
       <div className='p-3 absolute bg-blue-300/20 rounded-xl border-blue-400
           border left-1/2 top-20    '>
         <h2 className='flex items-center gap-3'><Loader2Icon className='animate-spin'/> {loadingmsg} </h2>
        </div>}
 
-    </div>
   {/* settingSection */}
    <SettingSection projectDetail={projectDeatail} />
     {/* canvasSection */}
-
+     <Canvas/>
+    </div>
     </div>
 
  
